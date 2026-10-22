@@ -9,6 +9,8 @@ export default function ContactForm() {
     date: '',
     message: '',
   });
+  
+  const [status, setStatus] = useState('idle');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,9 +18,26 @@ export default function ContactForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle submission (frontend only)
-    alert('Thank you for your inquiry! We will get back to you soon.');
+    setStatus('loading');
+
+    // ⚠️ APNA WHATSAPP NUMBER YAHAN DALEIN (Country code ke sath, bina + ke)
+    const myWhatsAppNumber = "923001234567"; 
+
+    // Message format tayar karein (%0A new line ke liye hota hai)
+    const waText = `*New Booking Inquiry*%0A%0A*Name:* ${formData.name}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone || 'N/A'}%0A*Service:* ${formData.service}%0A*Date:* ${formData.date || 'N/A'}%0A*Message:* ${formData.message}`;
+    
+    // WhatsApp Link banayein
+    const whatsappUrl = `https://wa.me/${myWhatsAppNumber}?text=${waText}`;
+
+    // Client ko WhatsApp par redirect karein
+    window.open(whatsappUrl, '_blank');
+
+    // Form clear kar dein
+    setStatus('success');
     setFormData({ name: '', email: '', phone: '', service: '', date: '', message: '' });
+
+    // 5 second baad status reset karein
+    setTimeout(() => setStatus('idle'), 5000);
   };
 
   return (
@@ -84,9 +103,16 @@ export default function ContactForm() {
         onChange={handleChange}
         className="w-full bg-transparent border-b border-ink/20 py-3 focus:outline-none focus:border-champagne transition-colors placeholder-ink/40 resize-none"
       />
+      
       <button type="submit" className="btn-primary w-full md:w-auto">
         Send Inquiry
       </button>
+
+      {status === 'success' && (
+        <p className="text-green-600 text-sm mt-4">
+          Opening WhatsApp... Please press send to deliver your inquiry.
+        </p>
+      )}
     </form>
   );
 }

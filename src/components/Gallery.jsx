@@ -3,14 +3,26 @@ import { galleryItems } from '../data/galleryData';
 import GalleryFilter from './GalleryFilter';
 import GalleryCard from './GalleryCard';
 import Lightbox from './Lightbox';
+import { generateAutoCaption } from '../utils/autoCaption'; // 👈 Import kiya
 
 export default function Gallery() {
   const [filter, setFilter] = useState('All');
   const [lightboxItem, setLightboxItem] = useState(null);
 
   const filteredItems = useMemo(() => {
-    if (filter === 'All') return galleryItems;
-    return galleryItems.filter((item) => item.category === filter);
+    const items = filter === 'All' 
+      ? galleryItems 
+      : galleryItems.filter((item) => item.category === filter);
+
+    // 🔥 Yahan hum har item ke andar auto-generated alt aur caption inject kar rahe hain
+    return items.map(item => {
+      const { alt, caption } = generateAutoCaption(item.src, item.category);
+      return {
+        ...item,
+        autoAlt: alt,       // SEO & Accessibility ke liye
+        autoCaption: caption // Hover ya Lightbox mein dikhane ke liye
+      };
+    });
   }, [filter]);
 
   return (
@@ -22,7 +34,7 @@ export default function Gallery() {
             key={item.id}
             item={item}
             delay={index * 0.05}
-            onClick={setLightboxItem}
+            onClick={() => setLightboxItem(item)} // Note: Yahan item pass kiya, function nahi
           />
         ))}
       </div>

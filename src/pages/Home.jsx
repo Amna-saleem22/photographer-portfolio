@@ -3,8 +3,9 @@ import FeaturedWork from '../components/FeaturedWork';
 import PhotographerIntro from '../components/PhotographerIntro';
 import ServicesPreview from '../components/ServicesPreview';
 import Testimonials from '../components/Testimonials';
-import CTASection from '../components/CTASection';
+import CTASection from '../components/Chatbot/BackToTop';
 import Gallery from '../components/Gallery';
+import ChatBot from '../components/Chatbot/ChatBot';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Gallery />
       <Testimonials />
       <CTASection />
+      <ChatBot />
     </>
   );
 }
